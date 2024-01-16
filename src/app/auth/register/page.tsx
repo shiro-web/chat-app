@@ -1,9 +1,13 @@
 "use client"
 
+import { createUserWithEmailAndPassword } from 'firebase/auth'
 import React from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { auth } from '../../../../firebase'
+import { useRouter } from 'next/navigation'
 
 const Register = () => {
+    const router = useRouter();
 
     type Inputs = {
         email:string;
@@ -17,7 +21,20 @@ const Register = () => {
       } = useForm<Inputs>();
 
       const onSubmit:SubmitHandler<Inputs> = async(data) => {
-        console.log(data)
+        await createUserWithEmailAndPassword(auth,data.email,data.password).then(
+            (userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            router.push("auth/login")
+            // ...
+          })
+          .catch((error) => {
+            if (error.code === "auth/email-already-in-use"){
+                alert("このメールアドレスは既に使用されています。")
+            }else{
+                alert(error.message)
+            }
+          });
       }
 
   return (
@@ -44,7 +61,7 @@ const Register = () => {
                         message:"6文字以上入力してください。"
                     }
                       })}
-                    type="text" className='mt-1 border-2 rounded-md w-full p-2' />
+                    type="password" className='mt-1 border-2 rounded-md w-full p-2' />
                      {errors.password && <span className='text-red-600 text-sm'>{errors.password.message}</span>}
             </div>
             <div className='flex justify-end'>
