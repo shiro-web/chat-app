@@ -1,6 +1,6 @@
 "use client"
 
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
+import { signInWithEmailAndPassword } from 'firebase/auth'
 import React from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { auth } from '../../../../firebase'
