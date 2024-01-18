@@ -15,10 +15,10 @@ type Rooms = {
 }
 
 const Sidebar = () => {
-    const {user,userId} = useAppContext();
+    const {user,userId,setSelectedRoom} = useAppContext();
     const [rooms,setRooms] = useState<Rooms[]>([]);
 
-console.log(userId)
+
     useEffect(() => {
         const fetchRooms = async() => {
             const roomCollectionRef = collection(db,"rooms");
@@ -41,6 +41,11 @@ console.log(userId)
         fetchRooms();
 
     },[]);
+
+    const selectRoom = (roomId:string) => {
+        setSelectedRoom(roomId);
+        console.log(roomId)
+    }
   return (
     <div className='h-full overflow-y-auto px-5 flex flex-col bg-custom-blue'>
         <div className='grow'>
@@ -51,7 +56,12 @@ console.log(userId)
             <div>
                 <ul>
                     {rooms.map((room) => (
-                    <li key={room.id} className='cursor-pointer border-b p-4 text-slate-100 hover:bg-slate-700 duration-150'>{room.name}</li>
+                    <li 
+                    key={room.id} 
+                    className='cursor-pointer border-b p-4 text-slate-100 hover:bg-slate-700 duration-150'
+                    onClick ={() => selectRoom(room.id)}>
+                        {room.name}
+                    </li>
                     ))}
                 </ul>
             </div>
