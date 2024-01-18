@@ -1,26 +1,29 @@
-"use client"
+"use client";
 
 import { Timestamp, collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { IoMdLogOut } from "react-icons/io";
 import { db } from '../../../firebase';
-import { where } from 'firebase/firestore/lite';
+import { where } from 'firebase/firestore';
+import { useAppContext } from '@/context/AppContext';
+
+type Rooms = {
+    id:string;
+    createdAt:Timestamp;
+    name:string;
+    userId:string;
+}
 
 const Sidebar = () => {
-    type Rooms = {
-        id:string;
-        createdAt:Timestamp;
-        name:string;
-        userId:string;
-    }
-
+    const {user,userId} = useAppContext();
     const [rooms,setRooms] = useState<Rooms[]>([]);
 
+console.log(userId)
     useEffect(() => {
         const fetchRooms = async() => {
             const roomCollectionRef = collection(db,"rooms");
-            const q = query(roomCollectionRef,where("userId", "==", "ioGQnFt9F0VxgEOYDxy2CwgJ6J53" ), orderBy("createdAt","desc"));
-            onSnapshot(q,(snapshot) => {
+            const q = query(roomCollectionRef,where("userId", "==", userId ), orderBy("createdAt","desc"));
+            const unsubscribe = onSnapshot(q,(snapshot) => {
                 let newRooms:Rooms[] = [];
                 snapshot.docs.forEach((doc) => {
                     newRooms.push({ 
@@ -30,10 +33,14 @@ const Sidebar = () => {
                         id:doc.id})
                 });
                 setRooms(newRooms);
+                return () => {
+                    unsubscribe();
+                };
             })
         }
         fetchRooms();
-    },[])
+
+    },[]);
   return (
     <div className='h-full overflow-y-auto px-5 flex flex-col bg-custom-blue'>
         <div className='grow'>
