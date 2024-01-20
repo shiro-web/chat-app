@@ -1,6 +1,6 @@
 "use client";
 
-kannimport { Timestamp, addDoc, collection, onSnapshot, orderBy, query, serverTimestamp } from 'firebase/firestore';
+import { Timestamp, addDoc, collection, onSnapshot, orderBy, query, serverTimestamp } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { IoMdLogOut } from "react-icons/io";
 import { auth, db } from '../../../firebase';
